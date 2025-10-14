@@ -10,9 +10,9 @@ module lattice_nn
 
     function initialize_lattice(parameters::sim_parameters,states::sim_state)#::Nothing
 
-        allowed_boundry_conditions=["wall","periodic"]
-        if parameters.boundry_conditions ∉ allowed_boundry_conditions
-            error("Boundry conditon not known/implemented.")
+        allowed_boundary_conditions=["wall","periodic"]
+        if parameters.boundary_conditions ∉ allowed_boundary_conditions
+            error("Boundary condition not known/implemented.")
         end
         
         allowed_lattice_types=["cubic","mean_field","hexagonal"]
@@ -28,14 +28,14 @@ module lattice_nn
 
     function mean_field_lattice(parameters::sim_parameters,states::sim_state)
         println("mean field is only for testing!(very Slow)")
-        neigbourlist=zeros(Int64,parameters.number_of_pots,parameters.number_of_pots-1)
+        neighbor_list=zeros(Int64,parameters.number_of_pots,parameters.number_of_pots-1)
 
         for j in 1:parameters.number_of_pots
 
-            neigbourlist[j,:]=[i for i in 1:parameters.number_of_pots if i != j]
+            neighbor_list[j,:]=[i for i in 1:parameters.number_of_pots if i != j]
         end
-        states.neigbour_list=neigbourlist
-        states.max_neigbours=parameters.number_of_pots-1
+        states.neighbor_list=neighbor_list
+        states.max_neighbors=parameters.number_of_pots-1
 
         return nothing
     end
@@ -46,7 +46,7 @@ module lattice_nn
         
         dimension=length(parameters.dimensions)
         max_nn=dimension*2
-        neigbourlist=zeros(Int64,parameters.number_of_pots,max_nn)
+        neighbor_list=zeros(Int64,parameters.number_of_pots,max_nn)
         coordinates=zeros(Int64,parameters.number_of_pots,dimension)
         dr=1
 
@@ -55,9 +55,9 @@ module lattice_nn
             pos_periodic=pos
             for i in 1:length(pos)
                 if pos[i] <1 || pos[i] >parameters.dimensions[i] 
-                    if parameters.boundry_conditions=="wall"
+                    if parameters.boundary_conditions=="wall"
                         return 0
-                    elseif parameters.boundry_conditions=="periodic"
+                    elseif parameters.boundary_conditions=="periodic"
                         pos_periodic[i]= mod(pos[i]-1,parameters.dimensions[i])+1
                     end
                 end
@@ -83,8 +83,8 @@ module lattice_nn
             for dims in 1:dimension
                 dv=zeros(Int64,dimension)
                 dv[dims]=1
-                neigbourlist[pot_index,dims*2-1]=get_index(position+dv)
-                neigbourlist[pot_index,dims*2]=get_index(position-dv)
+                neighbor_list[pot_index,dims*2-1]=get_index(position+dv)
+                neighbor_list[pot_index,dims*2]=get_index(position-dv)
             end
             
             coordinates[pot_index,:]=get_coordinates(position)
@@ -103,12 +103,12 @@ module lattice_nn
             
         end
 
-        @save "lattice.jld2" coordinates neigbourlist
-        println("latice saved")
+        @save "lattice.jld2" coordinates neighbor_list
+        println("lattice saved")
 
 
-        states.neigbour_list=neigbourlist
-        states.max_neigbours=max_nn
+        states.neighbor_list=neighbor_list
+        states.max_neighbors=max_nn
 
         return nothing
         
@@ -119,7 +119,7 @@ module lattice_nn
         dimension=length(parameters.dimensions)
         
         if any(x -> x % 2 != 0, parameters.dimensions) 
-            error("Hexagonal lattice needs even amout in every dimension.")
+            error("Hexagonal lattice needs even amount in every dimension.")
         end
 
         if dimension ∉ [2,3] 
@@ -127,7 +127,7 @@ module lattice_nn
         end
 
         max_nn=(dimension-1)*6
-        neigbourlist=zeros(Int64,parameters.number_of_pots,max_nn)
+        neighbor_list=zeros(Int64,parameters.number_of_pots,max_nn)
         coordinates=zeros(Float64,parameters.number_of_pots,dimension)
         dx=1
         dy=dx*sqrt(3)/2
@@ -139,9 +139,9 @@ module lattice_nn
                 pos_periodic=pos
                 for i in 1:length(pos)
                     if pos[i] <1 || pos[i] >parameters.dimensions[i] 
-                        if parameters.boundry_conditions=="wall"
+                        if parameters.boundary_conditions=="wall"
                             return 0
-                        elseif parameters.boundry_conditions=="periodic"
+                        elseif parameters.boundary_conditions=="periodic"
                             pos_periodic[i]= mod(pos[i]-1,parameters.dimensions[i])+1
                         end
                     end
@@ -173,19 +173,19 @@ module lattice_nn
                 pot_index=get_index(position)
 
 
-                neigbourlist[pot_index,1]=get_index(position+[1,0])
-                neigbourlist[pot_index,2]=get_index(position+[-1,0])
+                neighbor_list[pot_index,1]=get_index(position+[1,0])
+                neighbor_list[pot_index,2]=get_index(position+[-1,0])
 
-                neigbourlist[pot_index,3]=get_index(position+[0,1])
-                neigbourlist[pot_index,4]=get_index(position+[0,-1])
+                neighbor_list[pot_index,3]=get_index(position+[0,1])
+                neighbor_list[pot_index,4]=get_index(position+[0,-1])
 
                 if iseven(position[2])
                     di=+1
                 else
                     di=-1
                 end
-                neigbourlist[pot_index,5]=get_index(position+[di,1])
-                neigbourlist[pot_index,6]=get_index(position+[di,-1])
+                neighbor_list[pot_index,5]=get_index(position+[di,1])
+                neighbor_list[pot_index,6]=get_index(position+[di,-1])
 
                 coordinates[pot_index,:]=get_coordinates(position)
 
@@ -209,9 +209,9 @@ module lattice_nn
                 pos_periodic=pos
                 for i in 1:length(pos)
                     if pos[i] <1 || pos[i] >parameters.dimensions[i] 
-                        if parameters.boundry_conditions=="wall"
+                        if parameters.boundary_conditions=="wall"
                             return 0
-                        elseif parameters.boundry_conditions=="periodic"
+                        elseif parameters.boundary_conditions=="periodic"
                             pos_periodic[i]= mod(pos[i]-1,parameters.dimensions[i])+1
                         end
                     end
@@ -247,19 +247,19 @@ module lattice_nn
                 pot_index=get_index3(position)
 
 
-                neigbourlist[pot_index,1]=get_index3(position+[1,0,0])
-                neigbourlist[pot_index,2]=get_index3(position+[-1,0,0])
+                neighbor_list[pot_index,1]=get_index3(position+[1,0,0])
+                neighbor_list[pot_index,2]=get_index3(position+[-1,0,0])
 
-                neigbourlist[pot_index,3]=get_index3(position+[0,1,0])
-                neigbourlist[pot_index,4]=get_index3(position+[0,-1,0])
+                neighbor_list[pot_index,3]=get_index3(position+[0,1,0])
+                neighbor_list[pot_index,4]=get_index3(position+[0,-1,0])
 
                 if iseven(position[2])
                     di2=1
                 else
                     di2=0
                 end
-                neigbourlist[pot_index,5]=get_index3(position+[2*di2-1,1,0])
-                neigbourlist[pot_index,6]=get_index3(position+[2*di2-1,-1,0])
+                neighbor_list[pot_index,5]=get_index3(position+[2*di2-1,1,0])
+                neighbor_list[pot_index,6]=get_index3(position+[2*di2-1,-1,0])
 
                 if iseven(position[3])
                     di3=1
@@ -267,13 +267,13 @@ module lattice_nn
                     di3=0
                 end
 
-                neigbourlist[pot_index,7]=get_index3(position+[0+di3,0,1])
-                neigbourlist[pot_index,8]=get_index3(position+[di2-1+di3,-1+2*di3,1])
-                neigbourlist[pot_index,9]=get_index3(position+[-1+di3,0,1])
+                neighbor_list[pot_index,7]=get_index3(position+[0+di3,0,1])
+                neighbor_list[pot_index,8]=get_index3(position+[di2-1+di3,-1+2*di3,1])
+                neighbor_list[pot_index,9]=get_index3(position+[-1+di3,0,1])
 
-                neigbourlist[pot_index,10]=get_index3(position+[0+di3,0,-1])
-                neigbourlist[pot_index,11]=get_index3(position+[di2-1+di3,-1+2*di3,-1])
-                neigbourlist[pot_index,12]=get_index3(position+[-1+di3,0,-1])
+                neighbor_list[pot_index,10]=get_index3(position+[0+di3,0,-1])
+                neighbor_list[pot_index,11]=get_index3(position+[di2-1+di3,-1+2*di3,-1])
+                neighbor_list[pot_index,12]=get_index3(position+[-1+di3,0,-1])
 
 
 
@@ -295,12 +295,12 @@ module lattice_nn
             end
         end
 
-        @save "lattice.jld2" coordinates neigbourlist
-        println("latice saved")
+        @save "lattice.jld2" coordinates neighbor_list
+        println("lattice saved")
 
-        #println(neigbourlist)
-        states.neigbour_list=neigbourlist
-        states.max_neigbours=max_nn
+        #println(neighbor_list)
+        states.neighbor_list=neighbor_list
+        states.max_neighbors=max_nn
 
         return nothing
         

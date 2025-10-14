@@ -14,7 +14,7 @@ module sim_data_nn
         skip_simulation_time::Float64
         lattice_type:: String
         start_position:: String
-        boundry_conditions:: String
+        boundary_conditions:: String
         save_location :: String
         rates :: String
         rates_eta :: Float64
@@ -28,18 +28,18 @@ module sim_data_nn
         episode_time::Float64
         prev_episode_time::Float64
         potts_state_array ::Vector{Int64}
-        neigbour_list ::Array{Int64}
+        neighbor_list ::Array{Int64}
         rates_function::Array{Float64}
         current_rates_up::Vector{Float64}
         current_rates_down::Vector{Float64}
         energy_change_up::Vector{Int64}
         energy_change_down::Vector{Int64}
-        max_neigbours::Int64
+        max_neighbors::Int64
         d_state_array::Array{Int32}
         d_state_occupation::Array{Int32}
         d_state_position::Array{Int32}
         occupation_vector::Vector{Int64}
-        fourier_exponets::Array{Complex{Float64}}
+        fourier_exponents::Array{Complex{Float64}}
         fourier_modes::Vector{Complex{Float64}}
         angle_change::Vector{Float64}
         fourier_abs_avg::Float64

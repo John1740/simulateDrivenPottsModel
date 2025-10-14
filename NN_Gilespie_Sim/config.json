@@ -9,7 +9,7 @@
     "rates": "arrhenius",
     "rates_eta": 0,
     "seed": 10,
-    "boundry_conditions": "periodic",
+    "boundary_conditions": "periodic",
     "start_position": "center",
     "dimensions": [30,30,30],
     "lattice_type": "cubic"

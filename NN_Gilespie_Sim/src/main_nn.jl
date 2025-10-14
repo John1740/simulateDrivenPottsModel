@@ -36,12 +36,12 @@ module sim_nn
             zeros(Float64, parameters.number_of_pots),
             zeros(Int64, parameters.number_of_pots),
             zeros(Int64, parameters.number_of_pots),#d Energy down
-            1,#max neigbours
+            1,#max neighbors
             zeros(Int32,1,1),#d_state_array
             zeros(Int32,1,1),#d_state_occupation
             zeros(Int32,1,1),#d_state_position
             zeros(Int64,parameters.number_of_states),#occupation_vector
-            zeros(Complex{Float64},parameters.number_of_states,modes),#fourier_exponets
+            zeros(Complex{Float64},parameters.number_of_states,modes),#fourier_exponents
             zeros(Complex{Float64},modes),#fourier_modes
             zeros(Float64,modes),#angle_change
             0.0,#fourier_abs_avg
@@ -145,10 +145,10 @@ module sim_nn
         ##
         modes=Int(floor(parameters.number_of_states/2))
         #exp_values=zeros(Complex{Float64},parameters.number_of_states,modes)
-        states.fourier_exponets=zeros(Complex{Float64},parameters.number_of_states,modes)
+        states.fourier_exponents=zeros(Complex{Float64},parameters.number_of_states,modes)
         for k in 1:modes
             for n in 1:parameters.number_of_states
-                states.fourier_exponets[n,k] += exp(1im * 2 * π * k * (n-1) /parameters.number_of_states)
+                states.fourier_exponents[n,k] += exp(1im * 2 * π * k * (n-1) /parameters.number_of_states)
             end
         end
         
@@ -228,7 +228,7 @@ module sim_nn
 
             index_of_transition=states.d_state_array[state_of_transition,1,rand(1:state_occupation)] 
             #println(index_of_transition)
-            #println(states.neigbour_list[index_of_transition,:])
+            #println(states.neighbor_list[index_of_transition,:])
             state_i_old=states.potts_state_array[index_of_transition]
             states.occupation_vector[state_i_old]-=1
             states.potts_state_array[index_of_transition]=mod(state_i_old,parameters.number_of_states)+1
@@ -240,7 +240,7 @@ module sim_nn
             calculate_one_d_energy!(index_of_transition,parameters,states)
             
 
-            for j in states.neigbour_list[index_of_transition,:]
+            for j in states.neighbor_list[index_of_transition,:]
                 if j == 0
                     continue
 
@@ -291,7 +291,7 @@ module sim_nn
 
             calculate_one_d_energy!(index_of_transition,parameters,states)
 
-            for j in states.neigbour_list[index_of_transition,:]
+            for j in states.neighbor_list[index_of_transition,:]
                 if j == 0
                     continue
                 end
@@ -326,7 +326,7 @@ module sim_nn
         end
         
         move_pot_state(index_of_transition,parameters,states)
-        for nn in states.neigbour_list[index_of_transition,:]
+        for nn in states.neighbor_list[index_of_transition,:]
             move_pot_state(Int32(nn),parameters,states)
         end
 
@@ -335,12 +335,12 @@ module sim_nn
 
     function debug_check_for_position_error(parameters::sim_data_nn.sim_parameters,states::sim_data_nn.sim_state)
         for i in 1:parameters.number_of_pots
-            if  states.energy_change_up[i]+states.max_neigbours+1!=states.d_state_position[i,1,1]
+            if  states.energy_change_up[i]+states.max_neighbors+1!=states.d_state_position[i,1,1]
                 println("error: Position 1")
                 println(i)
             end
             
-            if  states.energy_change_down[i]+states.max_neigbours+1!=states.d_state_position[i,1,2]
+            if  states.energy_change_down[i]+states.max_neighbors+1!=states.d_state_position[i,1,2]
                 println("error: Position 2")
                 println(i)
             end
@@ -365,21 +365,21 @@ module sim_nn
 
         for k in 1:modes
             for n in 1:parameters.number_of_states
-                fourier_modes_new[k] += states.fourier_exponets[n,k] * states.occupation_vector[n]/parameters.number_of_pots
+                fourier_modes_new[k] += states.fourier_exponents[n,k] * states.occupation_vector[n]/parameters.number_of_pots
             end
         end
 
 
         angle_change=zeros(Float64,modes)
-        abs_foruier=0
-        abs_foruier_old=0
+        abs_fourier=0
+        abs_fourier_old=0
         for i in 1:modes
-            abs_foruier=abs(fourier_modes_new[i])
-            abs_foruier_old=abs(states.fourier_modes[i])
-            if abs_foruier==0.0 || abs_foruier_old==0.0
+            abs_fourier=abs(fourier_modes_new[i])
+            abs_fourier_old=abs(states.fourier_modes[i])
+            if abs_fourier==0.0 || abs_fourier_old==0.0
                 angle_change[i]=0.0
             else
-                    angle_change[i]=(real(fourier_modes_new[i])*(imag(fourier_modes_new[i]-states.fourier_modes[i]))-imag(fourier_modes_new[i])*(real(fourier_modes_new[i]-states.fourier_modes[i])))/(abs_foruier^2)
+                    angle_change[i]=(real(fourier_modes_new[i])*(imag(fourier_modes_new[i]-states.fourier_modes[i]))-imag(fourier_modes_new[i])*(real(fourier_modes_new[i]-states.fourier_modes[i])))/(abs_fourier^2)
                 # angle_old=angle(states.fourier_modes[end])
                 # angle_new=angle(fourier_modes_new[end])
                 # angle_change=(angle_new-angle_old)
@@ -396,12 +396,12 @@ module sim_nn
             end
         end
 
-        #states.fourier_abs_avg=states.fourier_abs_avg*(states.number_of_current_step-1)/states.number_of_current_step+abs_foruier*1/states.number_of_current_step
+        #states.fourier_abs_avg=states.fourier_abs_avg*(states.number_of_current_step-1)/states.number_of_current_step+abs_fourier*1/states.number_of_current_step
     
         
-        states.fourier_abs_avg+=abs_foruier_old*(states.episode_time-states.prev_episode_time)
-        states.fourier_abs_avg_square+=(abs_foruier_old^2)*(states.episode_time-states.prev_episode_time)
-        states.fourier_abs_avg_quartic+=(abs_foruier_old^4)*(states.episode_time-states.prev_episode_time)
+        states.fourier_abs_avg+=abs_fourier_old*(states.episode_time-states.prev_episode_time)
+        states.fourier_abs_avg_square+=(abs_fourier_old^2)*(states.episode_time-states.prev_episode_time)
+        states.fourier_abs_avg_quartic+=(abs_fourier_old^4)*(states.episode_time-states.prev_episode_time)
 
 
 
@@ -414,21 +414,21 @@ module sim_nn
     end
 
     function initialize_d_states!(parameters::sim_data_nn.sim_parameters,states::sim_data_nn.sim_state)#::Nothing
-        M=(2*states.max_neigbours+1)
+        M=(2*states.max_neighbors+1)
         states.d_state_array=zeros(Int32,M,2,parameters.number_of_pots)
         states.d_state_occupation=zeros(Int32,M,2)
         states.d_state_position=zeros(Int32,parameters.number_of_pots,2,2)
 
         for pot in 1:parameters.number_of_pots
             #up
-            m=states.energy_change_up[pot]+states.max_neigbours+1
+            m=states.energy_change_up[pot]+states.max_neighbors+1
             states.d_state_occupation[m,1]+=1
             d_pos=states.d_state_occupation[m,1]
             states.d_state_array[m,1,d_pos]=pot
             states.d_state_position[pot,1,1]=m
             states.d_state_position[pot,2,1]=d_pos
             #down
-            m=states.energy_change_down[pot]+states.max_neigbours+1
+            m=states.energy_change_down[pot]+states.max_neighbors+1
             states.d_state_occupation[m,2]+=1
             d_pos=states.d_state_occupation[m,2]
             states.d_state_array[m,2,d_pos]=pot
@@ -454,18 +454,18 @@ module sim_nn
             same_state=0
             upper_state=0
             lower_state=0
-            for nn in 1:states.max_neigbours
-                #um ungerade nn und komplizierte bounddry conditions zu berücksichtigen wird ineffizent(doppel) gerechentet
-                if states.neigbour_list[pot,nn]==0
+
+            for nn in 1:states.max_neighbors
+                if states.neighbor_list[pot,nn]==0
                     continue
                 end
-                if states.potts_state_array[states.neigbour_list[pot,nn]]==states.potts_state_array[pot]
+                if states.potts_state_array[states.neighbor_list[pot,nn]]==states.potts_state_array[pot]
                     same_state+=1
                 end
-                if states.potts_state_array[states.neigbour_list[pot,nn]]==mod(states.potts_state_array[pot]-2,parameters.number_of_states)+1
+                if states.potts_state_array[states.neighbor_list[pot,nn]]==mod(states.potts_state_array[pot]-2,parameters.number_of_states)+1
                     lower_state+=1
                 end
-                if states.potts_state_array[states.neigbour_list[pot,nn]]==mod(states.potts_state_array[pot],parameters.number_of_states)+1
+                if states.potts_state_array[states.neighbor_list[pot,nn]]==mod(states.potts_state_array[pot],parameters.number_of_states)+1
                     upper_state+=1
                 end
 
@@ -482,18 +482,18 @@ module sim_nn
         same_state=0
         upper_state=0
         lower_state=0
-        for nn in 1:states.max_neigbours
-            #um ungerade nn und komplizierte bounddry conditions zu berücksichtigen wird ineffizent(doppel) gerechentet
-            if states.neigbour_list[pot,nn]==0
+        for nn in 1:states.max_neighbors
+
+            if states.neighbor_list[pot,nn]==0
                 continue
             end
-            if states.potts_state_array[states.neigbour_list[pot,nn]]==states.potts_state_array[pot]
+            if states.potts_state_array[states.neighbor_list[pot,nn]]==states.potts_state_array[pot]
                 same_state+=1
             end
-            if states.potts_state_array[states.neigbour_list[pot,nn]]==mod(states.potts_state_array[pot]-2,parameters.number_of_states)+1
+            if states.potts_state_array[states.neighbor_list[pot,nn]]==mod(states.potts_state_array[pot]-2,parameters.number_of_states)+1
                 lower_state+=1
             end
-            if states.potts_state_array[states.neigbour_list[pot,nn]]==mod(states.potts_state_array[pot],parameters.number_of_states)+1
+            if states.potts_state_array[states.neighbor_list[pot,nn]]==mod(states.potts_state_array[pot],parameters.number_of_states)+1
                 upper_state+=1
             end
 
@@ -513,9 +513,9 @@ module sim_nn
         for i in 1:2
             prev_pot_d_state=states.d_state_position[pot,1,i]
             if i==1
-                new_pot_d_state=states.energy_change_up[pot]+states.max_neigbours+1
+                new_pot_d_state=states.energy_change_up[pot]+states.max_neighbors+1
             else
-                new_pot_d_state=states.energy_change_down[pot]+states.max_neigbours+1
+                new_pot_d_state=states.energy_change_down[pot]+states.max_neighbors+1
             end
             if new_pot_d_state!=prev_pot_d_state
                 if states.d_state_position[pot,2,i]==states.d_state_occupation[prev_pot_d_state,i]
@@ -540,7 +540,7 @@ module sim_nn
 
         #down
         # prev_pot_d_state=states.d_state_position[pot,1,2]
-        # new_pot_d_state=states.energy_change_down[pot]+states.max_neigbours+1
+        # new_pot_d_state=states.energy_change_down[pot]+states.max_neighbors+1
         # if new_pot_d_state!=prev_pot_d_state
         #     if states.d_state_position[pot,2,2]==states.d_state_occupation[prev_pot_d_state,2]
         #         states.d_state_array[prev_pot_d_state,2,states.d_state_position[pot,2,2]]=0

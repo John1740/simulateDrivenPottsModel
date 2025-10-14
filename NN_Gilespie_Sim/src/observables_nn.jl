@@ -25,11 +25,11 @@ module observables_nn
             )
     end
 
-    function write_observables_to_array(parameters::sim_parameters,states::sim_state,obserables_saves::observable_number_of_saves,observables::observable_data)#::Nothing
+    function write_observables_to_array(parameters::sim_parameters,states::sim_state,observables_saves::observable_number_of_saves,observables::observable_data)#::Nothing
 
-        if obserables_saves.potts_state_array>0
-            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.potts_state_array)+1
-            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time) * obserables_saves.potts_state_array)+1
+        if observables_saves.potts_state_array>0
+            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.potts_state_array)+1
+            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time) * observables_saves.potts_state_array)+1
 
             
             if index>0
@@ -37,7 +37,7 @@ module observables_nn
 
                     
                     for i in prev_index+1:index
-                        if i<=obserables_saves.potts_state_array+1 && i>0
+                        if i<=observables_saves.potts_state_array+1 && i>0
                             observables.potts_state_array[states.number_of_current_episode,i,:]=calculate_potts_state_array(states)
                         end
                     end
@@ -47,15 +47,15 @@ module observables_nn
         end
 
 
-        if obserables_saves.occupation_vector>0
-            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.occupation_vector)+1
-            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time) * obserables_saves.occupation_vector)+1
+        if observables_saves.occupation_vector>0
+            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.occupation_vector)+1
+            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time) * observables_saves.occupation_vector)+1
 
 
             if index>0
                 if index>prev_index
                     for i in prev_index+1:index
-                        if i<=obserables_saves.occupation_vector+1 && i>0
+                        if i<=observables_saves.occupation_vector+1 && i>0
                             observables.occupation_vector[states.number_of_current_episode,i,:]=calculate_occupation_vector(states)
                         end
                     end
@@ -65,15 +65,15 @@ module observables_nn
         end
 
 
-        if obserables_saves.fourier_modes>0
-            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.fourier_modes)+1
-            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.fourier_modes)+1
+        if observables_saves.fourier_modes>0
+            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.fourier_modes)+1
+            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.fourier_modes)+1
 
             if index>0 
                 if index>prev_index
                     for i in prev_index+1:index
-                        if i<=obserables_saves.fourier_modes+1 && i>0
-                            observables.fourier_modes[states.number_of_current_episode,i,:]=calculate_fourier_modes(parameters,states,obserables_saves)
+                        if i<=observables_saves.fourier_modes+1 && i>0
+                            observables.fourier_modes[states.number_of_current_episode,i,:]=calculate_fourier_modes(parameters,states,observables_saves)
                         end
                     end
                 end
@@ -81,14 +81,14 @@ module observables_nn
 
         end
 
-        if obserables_saves.angle_change>0
-            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.angle_change)+1
-            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.angle_change)+1
+        if observables_saves.angle_change>0
+            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.angle_change)+1
+            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.angle_change)+1
 
             if index>0 
                 if index>prev_index
                     for i in prev_index+1:index
-                        if i<=obserables_saves.angle_change+1 && i>0
+                        if i<=observables_saves.angle_change+1 && i>0
                             observables.angle_change[states.number_of_current_episode,i,:]=calculate_angle_change(parameters,states)
                         end
                     end
@@ -97,14 +97,14 @@ module observables_nn
 
         end
 
-        if obserables_saves.magnetization>0
-            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.magnetization)+1
-            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.magnetization)+1
+        if observables_saves.magnetization>0
+            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.magnetization)+1
+            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.magnetization)+1
 
             if index>0 
                 if index>prev_index
                     for i in prev_index+1:index
-                        if i<=obserables_saves.magnetization+1 && i>0
+                        if i<=observables_saves.magnetization+1 && i>0
                             observables.magnetization[states.number_of_current_episode,i,1]=calculate_magnetization(parameters,states)
                         end
                     end
@@ -113,14 +113,14 @@ module observables_nn
 
         end
 
-        if obserables_saves.fourier_abs_avg>0
-            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.fourier_abs_avg)+1
-            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.fourier_abs_avg)+1
+        if observables_saves.fourier_abs_avg>0
+            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.fourier_abs_avg)+1
+            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.fourier_abs_avg)+1
 
             if index>0 
                 if index>prev_index
                     for i in prev_index+1:index
-                        if i<=obserables_saves.fourier_abs_avg+1 && i>0
+                        if i<=observables_saves.fourier_abs_avg+1 && i>0
                             observables.fourier_abs_avg[states.number_of_current_episode,i,1]=calculate_fourier_abs_avg(parameters,states)
                             observables.fourier_abs_avg_square[states.number_of_current_episode,i,1]=calculate_fourier_abs_avg_square(parameters,states)
                             observables.fourier_abs_avg_quartic[states.number_of_current_episode,i,1]=calculate_fourier_abs_avg_quartic(parameters,states)
@@ -131,14 +131,14 @@ module observables_nn
 
         end
 
-        if obserables_saves.entropy>0
-            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.entropy)+1
-            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* obserables_saves.entropy)+1
+        if observables_saves.entropy>0
+            index=floor(Int64,(states.episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.entropy)+1
+            prev_index=floor(Int64,(states.prev_episode_time-parameters.skip_simulation_time)/(parameters.total_simulation_time-parameters.skip_simulation_time)* observables_saves.entropy)+1
 
             if index>0 
                 if index>prev_index
                     for i in prev_index+1:index
-                        if i<=obserables_saves.entropy+1 && i>0
+                        if i<=observables_saves.entropy+1 && i>0
                             observables.work[states.number_of_current_episode,i,1]=calculate_work(parameters,states)
                             observables.inflow[states.number_of_current_episode,i,1]=calculate_inflow(parameters,states)
                             observables.activity[states.number_of_current_episode,i,1]=calculate_activity(parameters,states)
@@ -153,36 +153,36 @@ module observables_nn
         return nothing
     end
 
-    function write_initial_observables_to_array(parameters::sim_parameters,states::sim_state,obserables_saves::observable_number_of_saves,observables::observable_data)#::Nothing
+    function write_initial_observables_to_array(parameters::sim_parameters,states::sim_state,observables_saves::observable_number_of_saves,observables::observable_data)#::Nothing
 
-        if obserables_saves.potts_state_array>0
+        if observables_saves.potts_state_array>0
             observables.potts_state_array[states.number_of_current_episode,1,:]=calculate_potts_state_array(states)
         end
 
-        if obserables_saves.occupation_vector>0
+        if observables_saves.occupation_vector>0
             observables.occupation_vector[states.number_of_current_episode,1,:]=calculate_occupation_vector(states)
         end
 
 
-        if obserables_saves.fourier_modes>0
-            observables.fourier_modes[states.number_of_current_episode,1,:]=calculate_fourier_modes(parameters,states,obserables_saves)
+        if observables_saves.fourier_modes>0
+            observables.fourier_modes[states.number_of_current_episode,1,:]=calculate_fourier_modes(parameters,states,observables_saves)
         end
 
-        if obserables_saves.angle_change>0
+        if observables_saves.angle_change>0
             observables.angle_change[states.number_of_current_episode,1,:]=calculate_angle_change(parameters,states)
         end
         
-        if obserables_saves.magnetization>0
+        if observables_saves.magnetization>0
             observables.magnetization[states.number_of_current_episode,1,1]=calculate_magnetization(parameters,states)
         end
 
-        if obserables_saves.fourier_abs_avg>0
+        if observables_saves.fourier_abs_avg>0
             observables.fourier_abs_avg[states.number_of_current_episode,1,1]=calculate_fourier_abs_avg(parameters,states)
             observables.fourier_abs_avg_square[states.number_of_current_episode,1,1]=calculate_fourier_abs_avg_square(parameters,states)
             observables.fourier_abs_avg_quartic[states.number_of_current_episode,1,1]=calculate_fourier_abs_avg_quartic(parameters,states)
         end
 
-        if obserables_saves.entropy>0
+        if observables_saves.entropy>0
             observables.work[states.number_of_current_episode,1,1]=calculate_work(parameters,states)
             observables.inflow[states.number_of_current_episode,1,1]=calculate_inflow(parameters,states)
             observables.activity[states.number_of_current_episode,1,1]=calculate_activity(parameters,states)
@@ -213,7 +213,7 @@ module observables_nn
     
             for k in 1:modes
                 for n in 1:parameters.number_of_states
-                    fourier_modes_new[k] += states.fourier_exponets[n,k] * states.occupation_vector[n]/parameters.number_of_pots
+                    fourier_modes_new[k] += states.fourier_exponents[n,k] * states.occupation_vector[n]/parameters.number_of_pots
                 end
             end
             states.fourier_modes=fourier_modes_new

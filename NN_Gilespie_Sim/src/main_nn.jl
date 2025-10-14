@@ -25,29 +25,29 @@ function initialize_simulation(parameters::sim_data_nn.sim_parameters)::sim_data
     modes = Int(floor(parameters.number_of_states / 2))
 
     state = sim_data_nn.sim_state(
-        1,
-        1,
-        0.0,
-        0.0,
-        zeros(Int64, parameters.number_of_pots),
-        nn_list,
-        zeros(Float64, 1, 1),#rates
-        zeros(Float64, parameters.number_of_pots),
-        zeros(Float64, parameters.number_of_pots),
-        zeros(Int64, parameters.number_of_pots),
-        zeros(Int64, parameters.number_of_pots),#d Energy down
-        1,#max neighbors
-        zeros(Int32, 1, 1),#d_state_array
-        zeros(Int32, 1, 1),#d_state_occupation
-        zeros(Int32, 1, 1),#d_state_position
-        zeros(Int64, parameters.number_of_states),#occupation_vector
-        zeros(Complex{Float64}, parameters.number_of_states, modes),#fourier_exponents
-        zeros(Complex{Float64}, modes),#fourier_modes
-        zeros(Float64, modes),#angle_change
-        0.0,#fourier_abs_avg
-        0.0,#fourier_abs_avg_square
-        0.0,#fourier_abs_avg_quartic
-        0.0 #work
+        1, # current episode
+        1, # current step
+        0.0, # episode time
+        0.0, # prev episode time
+        zeros(Int64, parameters.number_of_pots), # potts state array
+        nn_list, # neighbor list
+        zeros(Float64, 1, 1), #rates function
+        zeros(Float64, parameters.number_of_pots), # current rates up
+        zeros(Float64, parameters.number_of_pots), # current rates down
+        zeros(Int64, parameters.number_of_pots), # d Energy up
+        zeros(Int64, parameters.number_of_pots), # d Energy down
+        1, # max neighbors
+        zeros(Int32, 1, 1), # d_state_array
+        zeros(Int32, 1, 1), # d_state_occupation
+        zeros(Int32, 1, 1), # d_state_position
+        zeros(Int64, parameters.number_of_states), # occupation_vector
+        zeros(Complex{Float64}, parameters.number_of_states, modes), # fourier_exponents
+        zeros(Complex{Float64}, modes), # fourier_modes
+        zeros(Float64, modes), # angle_change
+        0.0, # fourier_abs_avg
+        0.0, # fourier_abs_avg_square
+        0.0, # fourier_abs_avg_quartic
+        0.0 # work
     )
 
 

@@ -1,0 +1,22 @@
+[
+  {
+    "driving_force": 3,
+    "interaction_strength": 0,
+    "number_of_states": 4,
+    "number_of_pots": 1e7,
+    "total_number_of_episodes": 1,
+    "total_simulation_time": 1.0,
+    "skip_simulation_time": 0.0,
+    "start_position": "center",
+    "rates": "arrhenius",
+    "rates_eta": 0,
+    "seed": 0
+  },
+  {
+    "occupation_vector": 0,
+    "fourier_modes": 100,
+    "angle_change":10,
+    "fourier_abs_avg":10,
+    "entropy":200
+  }
+]

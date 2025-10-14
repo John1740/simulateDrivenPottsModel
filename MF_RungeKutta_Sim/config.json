@@ -1,0 +1,20 @@
+[
+  {
+    "driving_force":10,
+    "interaction_strength": 3,
+    "number_of_states": 2,
+    "dt": 0.00001,
+    "total_number_of_episodes": 2,
+    "total_simulation_time": 100.0,
+    "rates": "arrhenius",
+    "start_position": "center",
+    "rates_eta": 0,
+    "seed": 0
+  },
+  {
+    "occupation_vector": 10000,
+    "fourier_modes": 10000,
+    "angle_change":10,
+    "fourier_abs_avg":10
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "driving_force": 3.0,
+    "interaction_strength": 3.81,
+    "number_of_states": 3,
+    "total_number_of_episodes": 1,
+    "total_simulation_time": 10.0,
+    "skip_simulation_time": 0.0,
+    "rates": "arrhenius",
+    "rates_eta": 0,
+    "seed": 10,
+    "boundry_conditions": "periodic",
+    "start_position": "center",
+    "dimensions": [30,30,30],
+    "lattice_type": "cubic"
+  },
+  {
+    "potts_state_array": 0,
+    "occupation_vector": 1000,
+    "fourier_modes": 1000,
+    "angle_change":0,
+    "fourier_abs_avg":0,
+    "entropy": 0,
+    "magnetization": 0
+  }
+]

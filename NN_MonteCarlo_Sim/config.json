@@ -1,0 +1,24 @@
+[
+  {
+    "driving_force": 5.0,
+    "interaction_strength": 6.0,
+    "number_of_states": 3,
+    "total_number_of_episodes": 1,
+    "total_simulation_time": 2.0,
+    "skip_simulation_time": 0.1,
+    "rates": "arrhenius",
+    "rates_eta": 0,
+    "seed": 1,
+    "boundry_conditions": "periodic",
+    "start_position": "edge",
+    "dimensions": [30,30,30],
+    "lattice_type": "cubic"
+  },
+  {
+    "potts_state_array": 10,
+    "occupation_vector": 10,
+    "fourier_modes": 1000,
+    "angle_change":10,
+    "fourier_abs_avg":10
+  }
+]

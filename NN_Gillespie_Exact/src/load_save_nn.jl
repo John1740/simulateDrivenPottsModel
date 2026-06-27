@@ -11,7 +11,7 @@ export load_simulation_parameters, load_observable_number_of_saves
 
 function load_simulation_parameters(json_file::String)::sim_parameters
     # Load JSON data from file
-    version = "NN_2.0"
+    version = "NN_2.1.0"
     json_data = JSON.parse(read(json_file, String))
 
     # Default values

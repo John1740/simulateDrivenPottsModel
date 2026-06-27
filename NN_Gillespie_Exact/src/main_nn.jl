@@ -109,14 +109,14 @@ function run_simulation()#:: Nothing
     observable_data = observables_nn.initialize_observable_arrays(parameters, observable_saves)
 
 
-    counter = 0
-    base_name = "started.txt"
-    file_name = base_name
-    while isfile(file_name)
-        counter += 1
-        file_name = "$(base_name[1:end-4])($counter)$(base_name[end-3:end])"
-    end
-    touch(file_name)
+    # counter = 0
+    # base_name = "started.txt"
+    # file_name = base_name
+    # while isfile(file_name)
+    #     counter += 1
+    #     file_name = "$(base_name[1:end-4])($counter)$(base_name[end-3:end])"
+    # end
+    # touch(file_name)
 
 
     while states.number_of_current_episode <= parameters.total_number_of_episodes
@@ -125,14 +125,14 @@ function run_simulation()#:: Nothing
     end
     load_save_nn.save_all(parameters, observable_saves, observable_data)
 
-    counter = 0
-    base_name = "finished.txt"
-    file_name = base_name
-    while isfile(file_name)
-        counter += 1
-        file_name = "$(base_name[1:end-4])($counter)$(base_name[end-3:end])"
-    end
-    touch(file_name)
+    # counter = 0
+    # base_name = "finished.txt"
+    # file_name = base_name
+    # while isfile(file_name)
+    #     counter += 1
+    #     file_name = "$(base_name[1:end-4])($counter)$(base_name[end-3:end])"
+    # end
+    # touch(file_name)
 
     return nothing
 end
